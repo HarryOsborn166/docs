@@ -1,0 +1,21 @@
+[package]
+name = "clmm-booster"
+version = "0.1.0"
+description = "CLMM Position Booster with Flash Loans on Solana"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "clmm_booster"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.29.0"
+anchor-spl = "0.29.0"
+solana-program = "1.17.0"
