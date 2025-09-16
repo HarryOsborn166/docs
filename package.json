@@ -7,9 +7,11 @@
     "build": "anchor build",
     "deploy": "anchor deploy",
     "test": "anchor test",
-    "start": "ts-node app/index.ts",
-    "dev": "nodemon --exec ts-node app/index.ts",
-    "monitor": "ts-node app/monitor.ts"
+    "start": "ts-node app/price-manipulation-bot.ts",
+    "dev": "nodemon --exec ts-node app/price-manipulation-bot.ts",
+    "monitor": "ts-node app/monitor.ts",
+    "demo": "ts-node examples/price-manipulation-demo.ts",
+    "arbitrage": "ts-node app/index.ts"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.29.0",
