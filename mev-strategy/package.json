@@ -1,0 +1,33 @@
+{
+  "name": "solana-mev-drift-strategy",
+  "version": "1.0.0",
+  "description": "MEV strategy using Drift Protocol with Jito Bundles",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node src/test.js",
+    "devnet": "node src/devnet-test.js"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.87.6",
+    "@solana/spl-token": "^0.3.9",
+    "@drift-labs/sdk": "^2.74.0",
+    "@pythnetwork/client": "^2.19.0",
+    "@jup-ag/api": "^6.0.0",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "bn.js": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0"
+  },
+  "keywords": [
+    "solana",
+    "mev",
+    "drift",
+    "jito",
+    "defi"
+  ],
+  "author": "MEV Trader",
+  "license": "MIT"
+}
