@@ -1,57 +1,43 @@
 {
-  "name": "balancer-docs",
+  "name": "drift-flash-arbitrage",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "workspaces": [
-    "./theme"
-  ],
+  "description": "Flash loan arbitrage bot for Drift Protocol on Solana",
+  "main": "app/index.js",
   "scripts": {
-    "dev": "vuepress dev docs",
-    "build": "vuepress build docs",
-    "build:preview": "npx http-server docs/.vuepress/dist/",
-    "build-theme": "(cd theme; npm run build; npm run copy)",
-    "build:all": "npm run build-theme && npm run build",
-    "lint": "eslint . --ext .js,.ts,.vue --max-warnings 0"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@balancer-labs/sdk": "^0.1.40",
-    "@types/ethereum-blockies": "^0.1.0",
-    "@typescript-eslint/eslint-plugin": "^5.40.1",
-    "@typescript-eslint/parser": "^5.40.1",
-    "@vuepress/plugin-register-components": "^2.0.0-beta.62",
-    "cpx": "^1.5.0",
-    "docsearch.js": "^2.5.2",
-    "eslint": "^8.26.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier-vue": "^4.2.0",
-    "eslint-plugin-simple-import-sort": "^8.0.0",
-    "eslint-plugin-tailwindcss": "^2.0.1",
-    "eslint-plugin-vue": "^9.6.0",
-    "feather-icons": "^4.29.0",
-    "glob": "^8.0.3",
-    "http-server": "^14.1.1",
-    "lodash": "^4.17.21",
-    "markdown-it-meta": "^0.0.1",
-    "titleize": "^3.0.0",
-    "vuepress": "^2.0.0-beta.53",
-    "vuepress-plugin-copy-code2": "^2.0.0-beta.143",
-    "vuepress-plugin-md-enhance": "^2.0.0-beta.131"
+    "build": "anchor build",
+    "deploy": "anchor deploy",
+    "test": "anchor test",
+    "start": "ts-node app/index.ts",
+    "dev": "nodemon --exec ts-node app/index.ts",
+    "monitor": "ts-node app/monitor.ts"
   },
   "dependencies": {
-    "@apollo/client": "^3.8.8",
-    "@balancer/sdk": "^0.0.3",
-    "@ethersproject/bignumber": "^5.7.0",
-    "@headlessui/vue": "^1.7.14",
-    "@web3modal/ethers": "^3.4.0",
-    "axios": "^1.4.0",
-    "color": "^4.2.3",
-    "ethereum-blockies": "^0.1.1",
-    "ethers": "^6.9.0",
-    "mersenne-twister": "^1.1.0",
-    "vue-prism-component": "^2.0.0",
-    "vue-virtual-scroller": "^2.0.0-beta.8",
-    "vue3-jazzicon": "^0.1.4"
-  }
+    "@coral-xyz/anchor": "^0.29.0",
+    "@drift-labs/sdk": "^2.0.0",
+    "@solana/web3.js": "^1.87.6",
+    "@solana/spl-token": "^0.3.9",
+    "bn.js": "^5.2.1",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.0",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/bn.js": "^5.1.1",
+    "@types/ws": "^8.5.8",
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1",
+    "nodemon": "^3.0.1",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
+  },
+  "keywords": [
+    "solana",
+    "drift",
+    "arbitrage",
+    "flash-loan",
+    "defi"
+  ],
+  "author": "DeFi Developer",
+  "license": "MIT"
 }

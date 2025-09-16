@@ -1,21 +1,265 @@
-# Balancer Docs
+# Drift Protocol Flash Loan Arbitrage
 
-Balancer documentation built using Vuepress and extension of a custom theme. Full markdown docs can be found in the [docs](./docs/) folder.
+Автоматизированная система арбитража с использованием флэш-займов на платформе Drift Protocol в сети Solana. Создает две противоположные позиции с плечом в одной транзакции для получения прибыли от ценовых несоответствий.
 
-## Local Setup
+## 🎯 Особенности
+
+- **Флэш-займы**: Арбитраж без начального капитала
+- **Двойные позиции**: Одновременное открытие длинных и коротких позиций
+- **Автоматизация**: Поиск и исполнение возможностей в реальном времени
+- **Риск-менеджмент**: Встроенные механизмы защиты от убытков
+- **Мониторинг**: Отслеживание рынков и уведомления
+
+## 📊 Стратегии арбитража
+
+### 1. Спот-Фьючерс арбитраж
+```
+Спотовая цена BTC: $45,000
+Фьючерсная цена BTC: $45,200
+Спред: 0.44% → Потенциальная прибыль
+```
+
+### 2. Межрыночный арбитраж
+```
+Drift BTC: $45,000
+Другая DEX BTC: $45,150
+Спред: 0.33% → Арбитражная возможность
+```
+
+### 3. Funding Rate арбитраж
+```
+Положительная ставка финансирования
+Открываем короткую позицию для получения выплат
+```
+
+## 🏗️ Архитектура
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Мониторинг    │───▶│  Смарт-контракт  │───▶│  Drift Protocol │
+│   возможностей  │    │   арбитража      │    │    позиции      │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                        │                        │
+         ▼                        ▼                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│  Уведомления    │    │   Флэш-займы     │    │   PnL расчет    │
+│   и алерты      │    │   и возврат      │    │  и закрытие     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+## 🚀 Быстрый старт
+
+### 1. Установка зависимостей
 
 ```bash
+# Установка Node.js зависимостей
 npm install
-npm run build-theme
-npm run dev
+
+# Установка Rust и Anchor (если не установлены)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked
 ```
 
-## Build preview
-
-Useful to test only-production features like metadata
+### 2. Настройка окружения
 
 ```bash
-npm run build-theme
-npm run build
-npm run build:preview
+# Копируем файл конфигурации
+cp .env.example .env
+
+# Редактируем настройки
+nano .env
 ```
+
+Основные параметры:
+```env
+SOLANA_RPC_URL=https://api.devnet.solana.com
+PRIVATE_KEY=your_base58_private_key_here
+MAX_POSITION_SIZE=1000
+MIN_PROFIT_THRESHOLD=0.01
+MAX_LEVERAGE=10
+```
+
+### 3. Деплой контракта
+
+```bash
+# Деплой на devnet
+./scripts/deploy.sh devnet
+
+# Деплой на mainnet (после тестирования!)
+./scripts/deploy.sh mainnet
+```
+
+### 4. Запуск системы
+
+```bash
+# Запуск мониторинга (только отслеживание)
+npm run monitor
+
+# Запуск автоматического арбитража
+npm start
+
+# Анализ исторических данных
+npm run monitor -- --analyze
+```
+
+## 📈 Использование
+
+### Мониторинг возможностей
+
+```typescript
+import { ArbitrageBot } from './app/index';
+
+const bot = new ArbitrageBot();
+await bot.initializeDriftClient();
+
+// Поиск возможностей
+const opportunities = await bot.findArbitrageOpportunities();
+console.log(`Найдено ${opportunities.length} возможностей`);
+```
+
+### Выполнение арбитража
+
+```typescript
+// Лучшая возможность
+const bestOpportunity = opportunities[0];
+
+// Выполнение сделки
+const success = await bot.executeArbitrage(bestOpportunity);
+if (success) {
+    console.log('Арбитраж выполнен успешно!');
+}
+```
+
+### Экстренное закрытие
+
+```typescript
+// Закрытие всех позиций
+await bot.emergencyClose(marketIndexLong, marketIndexShort);
+```
+
+## 🛡️ Управление рисками
+
+### Встроенные защиты
+
+1. **Лимит убытков**: Максимальная потеря в день
+2. **Стоп-лосс**: Автоматическое закрытие убыточных позиций
+3. **Размер позиции**: Ограничение максимального размера
+4. **Тайм-аут**: Автоматическое закрытие по времени
+
+### Конфигурация рисков
+
+```env
+STOP_LOSS_PERCENTAGE=0.05      # 5% стоп-лосс
+MAX_DAILY_LOSS=100             # $100 максимум в день
+POSITION_TIMEOUT_SECONDS=300   # 5 минут тайм-аут
+MAX_LEVERAGE=10                # Максимальное плечо 10x
+```
+
+## 📊 Мониторинг и алерты
+
+### Telegram уведомления
+
+```env
+ENABLE_TELEGRAM_ALERTS=true
+TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_CHAT_ID=your_chat_id
+```
+
+### Логирование
+
+```env
+LOG_LEVEL=info
+LOG_FILE=logs/arbitrage.log
+```
+
+## 🧪 Тестирование
+
+```bash
+# Запуск тестов
+npm test
+
+# Тестирование на devnet
+anchor test --provider.cluster devnet
+```
+
+### Примеры тестов
+
+```typescript
+describe("Flash Loan Arbitrage", () => {
+  it("Должен выполнить прибыльный арбитраж", async () => {
+    const opportunity = {
+      marketIndexLong: 0,
+      marketIndexShort: 1,
+      priceSpread: 0.02,
+      expectedProfit: 0.016
+    };
+    
+    const result = await bot.executeArbitrage(opportunity);
+    expect(result).to.be.true;
+  });
+});
+```
+
+## 💡 Примеры использования
+
+### 1. Базовый мониторинг
+
+```bash
+# Просто отслеживаем возможности
+npm run monitor
+```
+
+Вывод:
+```
+🎯 Найдено 3 арбитражных возможности:
+1. Рынки: 0 (Long) vs 1 (Short)
+   Спред: 0.245%
+   Ожидаемая прибыль: 0.196%
+   Цены: Long $45000.00 | Short $45110.00
+```
+
+### 2. Автоматический арбитраж
+
+```bash
+# Автоматическое выполнение сделок
+npm start
+```
+
+### 3. Анализ данных
+
+```bash
+# Анализ исторических возможностей
+npm run monitor -- --analyze
+```
+
+## 📋 Требования
+
+- Node.js 18+
+- Rust 1.70+
+- Anchor Framework 0.29+
+- Solana CLI
+- Минимум 0.5 SOL для деплоя
+- Токены для торговли
+
+## ⚠️ Предупреждения
+
+1. **Высокий риск**: Торговля с плечом может привести к значительным убыткам
+2. **Тестирование**: Обязательно тестируйте на devnet перед mainnet
+3. **Мониторинг**: Постоянно следите за позициями и рынками
+4. **Ликвидность**: Убедитесь в достаточной ликвидности рынков
+5. **Комиссии**: Учитывайте все комиссии в расчетах
+
+## 🤝 Поддержка
+
+- Документация: `/docs`
+- Примеры: `/examples`
+- Тесты: `/tests`
+- Issues: GitHub Issues
+
+## 📄 Лицензия
+
+MIT License - см. [LICENSE](LICENSE) файл.
+
+---
+
+**⚠️ ДИСКЛЕЙМЕР**: Данный код предоставляется только в образовательных целях. Торговля криптовалютами сопряжена с высокими рисками. Автор не несет ответственности за возможные убытки.
